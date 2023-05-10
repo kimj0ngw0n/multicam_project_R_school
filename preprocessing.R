@@ -8,10 +8,10 @@ setwd('C:/Users/HPE/데면대면')
 # 청소년 비행 데이터
 fsn1 <- read.csv('fsn_row1.csv', header = F)
 names(fsn1) <- c('year', 'sido', 'signgu', 'rpt_total', 
-                'rpt_youthcrime', 'rpt_violence', 'cnt_danran', 
-                'cnt_motel', 'cnt_accm_living', 'cnt_adultgame', 
-                'cnt_bar', 'cnt_accm_travel', 'cnt_yuheung', 
-                'cnt_club')
+                 'rpt_youthcrime', 'rpt_violence', 'cnt_danran', 
+                 'cnt_motel', 'cnt_accm_living', 'cnt_adultgame', 
+                 'cnt_bar', 'cnt_accm_travel', 'cnt_yuheung', 
+                 'cnt_club')
 
 
 # ##### shp 파일을 불러와서 csv로 변환 #####
@@ -138,3 +138,7 @@ fsn <- merge(x = fsn1_1,
              by.y = 'X')
 
 fsn[is.na(fsn)] <- 0
+fsn <- fsn %>% select(-c(year, sido))
+
+##### 데이터 저장 #####
+write.csv(fsn, 'school_report_data.csv', row.names = F)
