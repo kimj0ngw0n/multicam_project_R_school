@@ -6,6 +6,10 @@ library(tidyverse)
 options('scipen' = 100)
 setwd('C:/Users/HPE/데면대면')
 
+substrRight <- function(x, n) {
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+
 # 청소년 비행 데이터
 fsn1 <- read.csv('fsn_row1.csv', header = F)
 names(fsn1) <- c('year', 'sido', 'signgu', 'rpt_total', 
@@ -156,10 +160,14 @@ names(fsn5) <- c('year', 'sido', 'signgu', 'rpt_total',
                  'cnt_club')
 
 fsn6 <- read.csv('fsn_row4_1_utf8.csv')
-fsn6 <- fsn6 %>% filter(X.1 == '' & X != '') %>% select(c('법정동코드', 'X'))
+fsn6 <- fsn6 %>% 
+  filter(폐지여부 == '존재' & (X.1 == '' | substrRight(X.1, 1) == '구') & X != '') %>% 
+  select(c('법정동코드', 'X', 'X.1'))
 # 법정동코드 중 앞 5자리만 불러오기 
 fsn6$codestr <- as.character(fsn6$법정동코드)
 fsn6$codestr <- substr(fsn6$codestr, 1, 5)
+fsn6 <- fsn6 %>% select(-'법정동코드')
+fsn6 <- distinct(fsn6, codestr, .keep_all = T)
 
 ##### 비상벨 데이터의 법정동 코드 5글자만 남기기 #####
 fsn7 <- fsn2
@@ -171,19 +179,22 @@ fsn8 <- merge(x = fsn7,
               by.x = 'codestr',
               by.y = 'codestr', 
               all.x = T)
+fsn8$X.2 <- ifelse(fsn8$X.1 == '', fsn8$X, paste(fsn8$X, fsn8$X.1))
+
 fsn9 <- fsn8 %>% 
-  select(X) %>% 
-  table %>% 
-  data.frame
+  select(X.2) %>% 
+  table() %>% 
+  data.frame()
 names(fsn9) <- c('X', 'cnt_bell')
 
 ##### 청소년 비행 데이터와 비상벨 빈도 데이터 병합 #####
-fsn10 <- merge(x = fsn5,
+fsn10 <- merge(x = fsn1,
                y = fsn9,
                by.x = 'signgu',
-               by.y = 'X')
-
+               by.y = 'X',
+               all.x = T)
 fsn10[is.na(fsn10)] <- 0
 fsn10 <- fsn10 %>% select(-year)
 
-write.csv(fsn10, 'school_report_data_3.csv', row.names = F)
+#write.csv(fsn10, 'school_report_data_korea.csv', row.names = F)
+#write.csv(fsn10, 'school_report_data_korea_CP949.csv', row.names = F, fileEncoding = 'CP949')
