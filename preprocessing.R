@@ -3,6 +3,7 @@
 # library(sf)
 # library(mapproj)
 library(tidyverse)
+options('scipen' = 100)
 setwd('C:/Users/HPE/데면대면')
 
 # 청소년 비행 데이터
@@ -141,4 +142,48 @@ fsn[is.na(fsn)] <- 0
 fsn <- fsn %>% select(-c(year, sido))
 
 ##### 데이터 저장 #####
-write.csv(fsn, 'school_report_data.csv', row.names = F)
+#write.csv(fsn, 'school_report_data.csv', row.names = F)
+
+
+
+
+##### 메인 주제 3을 위한 전처리 #####
+fsn5 <- read.csv('fsn_row1_1_utf8.csv', header = F)
+names(fsn5) <- c('year', 'sido', 'signgu', 'rpt_total', 
+                 'rpt_youthcrime', 'rpt_violence', 'cnt_danran', 
+                 'cnt_motel', 'cnt_accm_living', 'cnt_adultgame', 
+                 'cnt_bar', 'cnt_accm_travel', 'cnt_yuheung', 
+                 'cnt_club')
+
+fsn6 <- read.csv('fsn_row4_1_utf8.csv')
+fsn6 <- fsn6 %>% filter(X.1 == '' & X != '') %>% select(c('법정동코드', 'X'))
+# 법정동코드 중 앞 5자리만 불러오기 
+fsn6$codestr <- as.character(fsn6$법정동코드)
+fsn6$codestr <- substr(fsn6$codestr, 1, 5)
+
+##### 비상벨 데이터의 법정동 코드 5글자만 남기기 #####
+fsn7 <- fsn2
+fsn7$codestr <- substr(as.character(fsn7$LEGALDON_C), 1, 5)
+
+##### 비상벨 데이터와 행정동 코드 데이터 병합 및 빈도표 출력 #####
+fsn8 <- merge(x = fsn7, 
+              y = fsn6,
+              by.x = 'codestr',
+              by.y = 'codestr', 
+              all.x = T)
+fsn9 <- fsn8 %>% 
+  select(X) %>% 
+  table %>% 
+  data.frame
+names(fsn9) <- c('X', 'cnt_bell')
+
+##### 청소년 비행 데이터와 비상벨 빈도 데이터 병합 #####
+fsn10 <- merge(x = fsn5,
+               y = fsn9,
+               by.x = 'signgu',
+               by.y = 'X')
+
+fsn10[is.na(fsn10)] <- 0
+fsn10 <- fsn10 %>% select(-year)
+
+write.csv(fsn10, 'school_report_data_3.csv', row.names = F)
