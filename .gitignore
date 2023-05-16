@@ -1,7 +1,9 @@
 *.csv
 *.zip
 *.xls
+*.docx
 raw/
+image/
 
 # Created by https://www.toptal.com/developers/gitignore/api/r,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=r,windows

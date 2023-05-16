@@ -250,7 +250,8 @@ SRD4 <- read.csv('school_report_data_korea.csv')
 SRD4_rm_zero <- SRD4 %>% filter(cnt_bell > 0)
 plot(SRD4_rm_zero[,-c(1:5)])
 
-SRD4_rm_zero <- SRD4_rm_zero %>% select(cnt_danran, cnt_adultgame, cnt_bar, cnt_yuheung, cnt_club, cnt_bell)
+SRD4_rm_zero <- SRD4_rm_zero %>% 
+  select(cnt_danran, cnt_adultgame, cnt_bar, cnt_yuheung, cnt_club, cnt_bell)
 
 preProcess(SRD4_rm_zero[, -6])
 SRD4_rm_zero[, -6] <- SRD4_rm_zero[, -6] %>% 
