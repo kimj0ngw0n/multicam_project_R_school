@@ -167,6 +167,13 @@ car::ncvTest(lm3_2_2)
 # 다중공선성 
 car::vif(lm3_2_2)
 
+# 시각화
+SRD3_2$cnt_total <- apply(SRD3_2[, c(6:10)], 1, sum)
+
+plot(rpt_youthcrime ~ cnt_total, data = SRD3_2)
+plot(rpt_youthcrime ~ cnt_total, data = SRD3_2,
+     xlim = c(0, 250),
+     ylim = c(0, 300))
 
 # # 이상치 제거 후 분석 
 # SRD3_2_rm <- SRD3_2 %>% arrange(cnt_danran) %>% head(238)
@@ -254,8 +261,8 @@ SRD4_rm_zero <- SRD4_rm_zero %>%
   select(cnt_danran, cnt_adultgame, cnt_bar, cnt_yuheung, cnt_club, cnt_bell)
 
 preProcess(SRD4_rm_zero[, -6])
-SRD4_rm_zero[, -6] <- SRD4_rm_zero[, -6] %>% 
-  preProcess(method = c('range')) %>% 
+SRD4_rm_zero[, -6] <- SRD4_rm_zero[, -6] %>%
+  preProcess(method = c('range')) %>%
   predict(SRD4_rm_zero[, -6])
 
 SRD4_rm_zero$cnt_total <- apply(SRD4_rm_zero[, -6], 1, sum)
