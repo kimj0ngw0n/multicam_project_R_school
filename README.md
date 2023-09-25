@@ -7,7 +7,7 @@
 
 - 목적 : 상관/회귀 분석 등을 통한 아래의 가설 검증 및 여러 방향에서 분석
 - 팀원 : 김종원, 김지우
-- 사용 언어 : R
+- 사용 언어 : ![R](https://img.shields.io/badge/-R-blue?style=flat&logo=R&logoColor=#276DC3)
 - 소요 기간 : 12일
 
 ### 2. 가설
